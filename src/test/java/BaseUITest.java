@@ -1,10 +1,10 @@
 import com.codeborne.selenide.Configuration;
-import com.codeborne.selenide.SelenideElement;
 import com.codeborne.selenide.logevents.SelenideLogger;
 import io.qameta.allure.selenide.AllureSelenide;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 
+import static com.codeborne.selenide.Condition.text;
 import static com.codeborne.selenide.Condition.visible;
 import static com.codeborne.selenide.Selectors.byText;
 import static com.codeborne.selenide.Selenide.*;
@@ -40,10 +40,23 @@ public class BaseUITest {
     }
 
     /**
-     * Состояния чекбокса
+     * Выбрать чекбокс
      */
     protected void setCheckbox(String label) {
-        SelenideElement checkBox = $(byText(label)).preceding(0);
         $(byText(label)).click();
+    }
+
+    /**
+     * Принять всплывающее окно
+     */
+    protected void acceptAlert() {
+        switchTo().alert().accept();
+    }
+
+    /**
+     * Проверить, что элемент содержит конкретный текст
+     */
+    protected void verifyText(String selector, String expectedText) {
+        $(selector).shouldHave(text(expectedText));
     }
 }

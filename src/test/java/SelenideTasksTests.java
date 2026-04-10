@@ -1,4 +1,3 @@
-import com.codeborne.selenide.SelenideElement;
 import io.qameta.allure.AllureId;
 
 import static com.codeborne.selenide.Selectors.*;
@@ -9,14 +8,11 @@ import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.parallel.Execution;
 import org.junit.jupiter.api.parallel.ExecutionMode;
 
-import java.time.Duration;
-
 import static com.codeborne.selenide.Condition.*;
 import static com.codeborne.selenide.Selenide.*;
 import static utils.Constants.*;
 import utils.Constants;
 
-@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 @Execution(ExecutionMode.CONCURRENT)
 public class SelenideTasksTests extends BaseUITest {
 
@@ -49,7 +45,6 @@ public class SelenideTasksTests extends BaseUITest {
 
     @AllureId("005")
     @Test
-    @Order(1)
     @Owner("Kolkov")
     @Tag("smoke")
     @DisplayName("Возможность ожидания загрузки элемента на странице (AJAX)")
@@ -58,7 +53,7 @@ public class SelenideTasksTests extends BaseUITest {
         clickButton("Button Triggering AJAX Request");
 
         $(byText("Data loaded with AJAX get request."))
-                .shouldBe(visible, Duration.ofSeconds(20))
+                .shouldBe(visible, TWENTY_SECONDS)
                 .click();
     }
 
@@ -106,25 +101,16 @@ public class SelenideTasksTests extends BaseUITest {
     @DisplayName("Отображение скрытых кнопок на странице")
     public void visibilityButtonsTest() {
         open(VISIBILITY_URL);
-        SelenideElement hideButton = $("#hideButton");
-        SelenideElement removedButton = $("#removedButton");
-        SelenideElement zeroWidthButton = $("#zeroWidthButton");
-        SelenideElement overlappedButton = $("#overlappedButton");
-        SelenideElement zeroOpacityButton = $("#transparentButton");
-        SelenideElement visibilityHiddenButton = $("#invisibleButton");
-        SelenideElement displayNoneButton = $("#notdisplayedButton");
-        SelenideElement offscreenButton = $("#offscreenButton");
+        $("#hideButton").click();
 
-        hideButton.click();
-
-        hideButton.shouldBe(visible);
-        removedButton.shouldBe(hidden);
-        zeroWidthButton.shouldBe(hidden);
-        overlappedButton.shouldBe(visible);
-        zeroOpacityButton.shouldBe(exist);
-        visibilityHiddenButton.shouldBe(hidden);
-        displayNoneButton.shouldBe(hidden);
-        offscreenButton.shouldBe(exist);
+        $("#hideButton").shouldBe(visible);
+        $("#removedButton").shouldBe(hidden);
+        $("#zeroWidthButton").shouldBe(hidden);
+        $("#overlappedButton").shouldBe(visible);
+        $("#transparentButton").shouldBe(exist);
+        $("#invisibleButton").shouldBe(hidden);
+        $("#notdisplayedButton").shouldBe(hidden);
+        $("#offscreenButton").shouldBe(exist);
     }
 
     @AllureId("015")
@@ -161,16 +147,16 @@ public class SelenideTasksTests extends BaseUITest {
         open(ALERTS_URL);
 
         $("#alertButton").click();
-        switchTo().alert().accept();
+        acceptAlert();
 
         $("#confirmButton").click();
         String confirmMessage = switchTo().alert().getText();
         System.out.println("Сообщение во всплывающем окне (Confirm): " + confirmMessage);
-        switchTo().alert().accept();
+        acceptAlert();
 
         $("#promptButton").click();
         switchTo().alert().sendKeys("asd");
-        switchTo().alert().accept();
+        acceptAlert();
     }
 
     @AllureId("021")
@@ -182,10 +168,10 @@ public class SelenideTasksTests extends BaseUITest {
         open(ANIMATION_URL);
         $("#animationButton").click();
 
-        $(Constants.PRIMARY_BUTTON_CSS).shouldNotHave(cssClass("spin"), Duration.ofSeconds(12));
+        $(Constants.PRIMARY_BUTTON_CSS).shouldNotHave(cssClass("spin"), TEN_SECONDS);
 
         $(Constants.PRIMARY_BUTTON_CSS).click();
-        $("#opstatus").shouldHave(text("Moving Target clicked. It's class name is 'btn btn-primary'"));
+        $(OP_STATUS).shouldHave(text("Moving Target clicked. It's class name is 'btn btn-primary'"));
     }
 
     @AllureId("023")
@@ -195,9 +181,10 @@ public class SelenideTasksTests extends BaseUITest {
     @DisplayName("Возможность взаимодействия с чекбоксами, выпадающим списком")
     public void autoWaitTest() {
         String target = "#target";
-        String opStatus = "#opstatus";
         String elementType = "#element-type";
         String applyButton = "Apply 3s";
+        String inputText = "test";
+        String expectedText = "Text: test";
 
         open(AUTO_WAIT_URL);
 
@@ -210,23 +197,23 @@ public class SelenideTasksTests extends BaseUITest {
         $(elementType).selectOption("Textarea");
         setCheckbox("Enabled");
         clickButton(applyButton);
-        $(target).setValue("test");
+        $(target).setValue(inputText);
         $(elementType).click();
-        $(opStatus).shouldHave(text("Text: test"));
+        verifyText(OP_STATUS, expectedText);
 
         // Чекбокс 'Editable' и элемент 'Input'
         $(elementType).selectOption("Input");
         setCheckbox("Editable");
         clickButton(applyButton);
-        $(target).setValue("test").pressEnter();
-        $(opStatus).shouldHave(text("Text: test"));
+        $(target).setValue(inputText).pressEnter();
+        verifyText(OP_STATUS, expectedText);
 
         // Чекбокс 'On Top' и элемент 'Select'
         $(elementType).selectOption("Select");
         setCheckbox("On Top");
         clickButton(applyButton);
         $(target).selectOption("Item 2");
-        $(opStatus).shouldHave(text("Selected: Item 2"));
+        $(OP_STATUS).shouldHave(text("Selected: Item 2"));
 
         // Чекбокс 'Non Zero Size' и элемент 'Label'
         $(elementType).selectOption("Label");

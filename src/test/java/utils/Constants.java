@@ -1,5 +1,7 @@
 package utils;
 
+import java.time.Duration;
+
 public class Constants {
     public static final String BASE_URL = "http://uitestingplayground.com";
 
@@ -18,4 +20,8 @@ public class Constants {
     public static final String GEOLOCATION_URL    = BASE_URL + "/geolocation";
 
     public static final String PRIMARY_BUTTON_CSS = ".btn-primary";
+    public static final String OP_STATUS = "#opstatus";
+
+    public static final Duration TEN_SECONDS = Duration.ofSeconds(10);
+    public static final Duration TWENTY_SECONDS = Duration.ofSeconds(20);
 }
