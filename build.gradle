@@ -1,0 +1,42 @@
+plugins {
+    id "io.qameta.allure" version "2.11.2"
+    id 'java'
+    id "org.gradle.test-retry" version "1.6.0"
+}
+
+group = 'org.example'
+version = '1.0-SNAPSHOT'
+
+repositories {
+    mavenCentral()
+}
+
+allure {
+    version = '2.33.0'
+    adapter {
+        frameworks {
+            junit5 {
+                enabled = true
+            }
+        }
+    }
+}
+
+dependencies {
+    testImplementation 'org.junit.jupiter:junit-jupiter:5.10.0'
+    testImplementation 'com.codeborne:selenide:7.15.1'
+    testImplementation 'io.qameta.allure:allure-selenide:2.33.0'
+    testImplementation 'io.qameta.allure:allure-junit5:2.33.0'
+}
+
+test {
+    useJUnitPlatform()
+    maxParallelForks = 4
+    retry {
+        maxRetries = 2
+        maxFailures = 8
+        failOnPassedAfterRetry = false
+    }
+
+    maxParallelForks = 1
+}
