@@ -10,8 +10,9 @@ import org.junit.jupiter.api.parallel.ExecutionMode;
 
 import static com.codeborne.selenide.Condition.*;
 import static com.codeborne.selenide.Selenide.*;
-import static utils.Constants.*;
-import utils.Constants;
+import static utils.constants.AppRoutes.*;
+import static utils.constants.Timeouts.*;
+import static utils.constants.UISelectors.*;
 
 @Execution(ExecutionMode.CONCURRENT)
 public class SelenideTasksTests extends BaseUITest {
@@ -168,9 +169,9 @@ public class SelenideTasksTests extends BaseUITest {
         open(ANIMATION_URL);
         $("#animationButton").click();
 
-        $(Constants.PRIMARY_BUTTON_CSS).shouldNotHave(cssClass("spin"), TEN_SECONDS);
+        $(PRIMARY_BUTTON_CSS).shouldNotHave(cssClass("spin"), TEN_SECONDS);
 
-        $(Constants.PRIMARY_BUTTON_CSS).click();
+        $(PRIMARY_BUTTON_CSS).click();
         $(OP_STATUS).shouldHave(text("Moving Target clicked. It's class name is 'btn btn-primary'"));
     }
 
